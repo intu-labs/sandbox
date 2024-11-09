@@ -1,0 +1,47 @@
+{
+  "name": "v2-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@chakra-ui/react": "^2.10.4",
+    "@intuweb3/steven-web-kit": "^0.1.41",
+    "@vitejs/plugin-react": "^4.3.3",
+    "eslint-config-react-app": "^7.0.1",
+    "ethers": "5.7.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.3.0",
+    "viem": "^2.21.43"
+  },
+  "devDependencies": {
+    "vite": "^5.4.10",
+    "vite-plugin-wasm": "^3.3.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "browser": {
+    "crypto": false
+  }
+}

@@ -1,0 +1,34 @@
+{
+    "setupTasks": [
+      {
+        "name": "Install Dependencies",
+        "command": "pnpm install --force"
+      }
+    ],
+  
+    "tasks": {
+      "dev": {
+        "name": "dev",
+        "command": "pnpm i && pnpm build && pnpm preview",
+        "runAtStart": true,
+        "preview": {
+          "port": 5173
+        }
+      },
+      "build": {
+        "name": "build",
+        "command": "pnpm build",
+        "runAtStart": false
+      },
+      "preview": {
+        "name": "preview",
+        "command": "pnpm preview",
+        "runAtStart": false
+      },
+      "install": {
+        "name": "install dependencies",
+        "command": "pnpm install"
+      }
+    }
+  }
+  

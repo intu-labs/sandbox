@@ -136,7 +136,7 @@ function App() {
   const data = Array(totalTokens)
     .fill()
     .map((_, i) => ({
-      image: `https://tan-legislative-peafowl-782.mypinata.cloud/ipfs/Qmcmjm8eitJcg5oB9A9ec2QVXMVBs9vfKoUEBqcbmN2uum/${
+      image: `https://tan-legislative-peafowl-782.mypinata.cloud/ipfs/QmQEWNsT93yZWK5GqZQpDavVYf3Bw14hbgGuXzvxtwosfx/${
         i + databump
       }.png`,
       name: `Item ${i + databump}`,

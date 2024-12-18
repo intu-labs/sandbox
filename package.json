@@ -5,17 +5,17 @@
   "type": "module",
   "dependencies": {
     "@chakra-ui/react": "^2.10.4",
-    "@intuweb3/steven-web-kit": "^0.1.41",
-    "@vitejs/plugin-react": "^4.3.3",
+    "@intuweb3/steven-web-kit": "^0.1.44",
+    "@vitejs/plugin-react": "^4.3.4",
     "eslint-config-react-app": "^7.0.1",
     "ethers": "5.7.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-icons": "^5.3.0",
-    "viem": "^2.21.43"
+    "react-icons": "^5.4.0",
+    "viem": "^2.21.55"
   },
   "devDependencies": {
-    "vite": "^5.4.10",
+    "vite": "^5.4.11",
     "vite-plugin-wasm": "^3.3.0"
   },
   "scripts": {

@@ -35,7 +35,7 @@ const erc721Interface = new ethers.utils.Interface([
   "function safeMint(address _to, uint _tokenId)",
 ]);
 
-const nftContractAddress = "0x713b3c01dfb2a3edefc3002d24aae09cc321f89e";
+const nftContractAddress = "0xf66bdac2ed6a28af2091b799d352f80a22986ac5";
 const nftContractABI = NFTJSON;
 const nftContract = new ethers.Contract(
   nftContractAddress,

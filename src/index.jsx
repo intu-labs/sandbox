@@ -14,7 +14,8 @@ const intuConfig = {
     applicationDescription: "Login without a wallet!",
     theme: "dark", // Theme for the authentication UI (e.g., dark or light)
   },
-  claimUrl: "https://intudrip.xyz/faucet/claimarbitrumsepolia", // URL for managing user accounts (from environment variable)
+  claimUrl: "https://intudrip.xyz/faucet/claimarbitrumsepolia",
+  appId: "1:499664624959:web:bf72f54040d3a9c955878a", // URL for managing user accounts (from environment variable)
 };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

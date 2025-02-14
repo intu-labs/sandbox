@@ -5,23 +5,26 @@
   "type": "module",
   "dependencies": {
     "@chakra-ui/react": "^2.10.4",
-    "@intuweb3/steven-web-kit": "^0.1.44",
-    "@vitejs/plugin-react": "^4.3.4",
+    "@intuweb3/steven-web-kit": "^0.1.51",
+    "@vitejs/plugin-react": "^4.3.3",
     "eslint-config-react-app": "^7.0.1",
     "ethers": "5.7.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-icons": "^5.4.0",
-    "viem": "^2.21.55"
+    "react-icons": "^5.3.0",
+    "viem": "^2.21.43"
   },
   "devDependencies": {
-    "vite": "^5.4.11",
+        "vite": "^5.4.10",
     "vite-plugin-wasm": "^3.3.0"
   },
   "scripts": {
-    "dev": "vite",
+    "start": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "viteme": "vite build && vite preview",
+    "serve": "vite preview"
+
   },
   "eslintConfig": {
     "extends": [

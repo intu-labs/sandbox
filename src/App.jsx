@@ -4,38 +4,38 @@ import {
   Box,
   Text,
   AbsoluteCenter,
-  Button,
-  Heading,
   VStack,
   Center,
-  SimpleGrid,
-  Image,
   Grid,
-  GridItem,
 } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
-
 import {
   useConnect,
   useAccount,
   useTransaction,
   IntuTransactionModal,
+  useAccountRecovery,
 } from "@intuweb3/steven-web-kit";
+import { LoginButton } from "./components/Login";
+import { getClaimStatusForNFTs } from "./components/Nft";
+import NFTJSON from "./1155.json";
+import { useNFT } from "./hooks/useNFT";
+import { NFTGrid } from "./components/NFTGrid";
+import { WelcomeBox } from "./components/WelcomeBox";
+import { PageHeader } from "./components/PageHeader";
 
-import { RotatingText } from "./helpers/RotatingText";
-import { LoginButton } from "./helpers/Login";
-import { getClaimStatusForNFTs } from "./helpers/Nft";
-import NFTJSON from "./721.json";
+import {
+  NFT_CONTRACT_ADDRESS_ARBITRUM,
+  NFT_CONTRACT_ADDRESS_XFI,
+  IS_XFI,
+  provider,
+  erc1155Interface,
+} from "./config/constants";
 
-const provider = new ethers.providers.StaticJsonRpcProvider(
-  `https://arbitrum-sepolia.infura.io/v3/${import.meta.env.VITE_INFURA_RPC}`
-);
-const erc721Interface = new ethers.utils.Interface([
-  "function safeMint(address _to, uint _tokenId)",
-]);
-
-const nftContractAddress = "0xf66bdac2ed6a28af2091b799d352f80a22986ac5";
+const nftContractAddress = IS_XFI
+  ? NFT_CONTRACT_ADDRESS_XFI
+  : NFT_CONTRACT_ADDRESS_ARBITRUM;
 const nftContractABI = NFTJSON;
 const nftContract = new ethers.Contract(
   nftContractAddress,
@@ -53,7 +53,17 @@ function App() {
     createIntuAccount,
     getIntuAccount,
   } = useAccount();
-  const { createIntuTransaction } = useTransaction();
+  const { createIntuTransaction, handleApproveTransaction } = useTransaction();
+  const {
+    setAccountRecovery,
+    isAccountRecoveryActive,
+    proposeRecoveryWallet,
+    preRegistrationUserRotation,
+    getAllProposedRecoveryAddresses,
+    getPendingRecoveryAddress,
+    setAccountRecoveryCustomAuth,
+  } = useAccountRecovery();
+
   const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
   const [currentVault, setCurrentVault] = useState("");
   const [currentVaultEoa, setCurrentVaultEoa] = useState("");
@@ -62,36 +72,53 @@ function App() {
   const [creatingAccount, setCreatingAccount] = useState(false);
   const [claimStatuses, setClaimStatuses] = useState([]);
 
-  let sleeptime = 1250;
+  let blockRange = 250000;
+  let sleeptime = IS_XFI ? 5500 : 1500;
   const databump = 1;
   const totalTokens = 44;
+
+  const { nftData } = useNFT();
 
   useEffect(() => {
     const initializeAccount = async () => {
       if (intuVaults.length === 0) {
         setGatheringVaults(true);
-        await sleep(500);
         let vaultsData = null;
-
         if (userIntuInfo) {
           vaultsData = await getIntuAccount();
         }
-
         if (vaultsData) {
           setIntuVaults(vaultsData);
           setCurrentVault(vaultsData.vaultAddress);
           setCurrentVaultEoa(vaultsData.masterPublicAddress);
         } else {
           setCreatingAccount(true);
-          await sleep(sleeptime);
-          await intuAirdrop();
+          intuAirdrop();
           await sleep(sleeptime);
           await createIntuAccount();
+          console.log("done creating account");
           setCreatingAccount(false);
-          window.location.reload();
+          if (IS_XFI) {
+            await sleep(sleeptime);
+            vaultsData = await getIntuAccount();
+            if (vaultsData) {
+              setIntuVaults(vaultsData);
+              setCurrentVault(vaultsData.vaultAddress);
+              setCurrentVaultEoa(vaultsData.masterPublicAddress);
+            }
+          } else {
+            //window.location.reload();
+            vaultsData = await getIntuAccount();
+            if (vaultsData) {
+              setIntuVaults(vaultsData);
+              setCurrentVault(vaultsData.vaultAddress);
+              setCurrentVaultEoa(vaultsData.masterPublicAddress);
+            }
+            //IS_XFI ? await sleep(sleeptime) : "";
+          }
         }
-        setGatheringVaults(false);
       }
+      setGatheringVaults(false);
     };
     if (isIntuConnected) {
       initializeAccount();
@@ -104,47 +131,33 @@ function App() {
         nftContract,
         totalTokens
       );
-      nftClaimStatusArray.shift();
       setClaimStatuses(nftClaimStatusArray);
     };
     fetchData();
   }, []);
 
   let submitTx = async (myVaultAddress, myCurrentVaultEoa, index) => {
-    //let chainId = "421614";
-    //let value = "0";
     let to = nftContractAddress;
-    //let gasPrice = 100000;
-    //let gas = 100000;
-    //let nonce = await provider.getTransactionCount(myCurrentVaultEoa);
+
     await intuAirdropMasterAccount();
-    const data = erc721Interface.encodeFunctionData("safeMint", [
-      myCurrentVaultEoa,
-      index,
-    ]);
+    //const data = erc721Interface.encodeFunctionData("safeMint", [
+    //  myCurrentVaultEoa,
+    //  index,
+    //]);
+
+    const data = erc1155Interface.encodeFunctionData("claimNFT", [index]);
     try {
       await createIntuTransaction({
         toAddress: to,
         amount: "0",
         data: data,
       });
+      console.log("Transaction created successfully!");
     } catch (err) {
       console.log(err);
     }
+    //let signTx = await signTx(myVaultAddress, 1);
   };
-
-  const data = Array(totalTokens)
-    .fill()
-    .map((_, i) => ({
-      image: `https://tan-legislative-peafowl-782.mypinata.cloud/ipfs/QmQEWNsT93yZWK5GqZQpDavVYf3Bw14hbgGuXzvxtwosfx/${
-        i + databump
-      }.png`,
-      name: `Item ${i + databump}`,
-      date: new Date(
-        Date.now() - Math.floor(Math.random() * 1000000000)
-      ).toLocaleDateString(),
-      claimed: claimStatuses[i],
-    }));
 
   const FloatingInfoBox = () => {
     const [isVisible, setIsVisible] = useState(true);
@@ -167,30 +180,41 @@ function App() {
       >
         <VStack align="start" spacing={2}>
           <LoginButton
-            connectIntu={connectIntu}
+            intuConnect={connectIntu}
             isIntuConnected={isIntuConnected}
-            disconnectIntu={disconnectIntu}
+            intuDisconnect={disconnectIntu}
             isCreatingIntuAccount={isCreatingIntuAccount}
           />
           <Text fontWeight="bold">Info:</Text>
           {isCreatingIntuAccount && (
-            <Text>
-              Creating INTU account.
-              <br />
-              Generating your address
-            </Text>
+            <>
+              <Text>
+                Creating INTU MPC account.
+                <Text>
+                  Please wait while we set up your account. This should take
+                  about 30 seconds
+                </Text>
+              </Text>
+              <video width="100%" autoPlay loop muted>
+                <source src="../CROSSFI_1.mp4" type="video/mp4" />
+              </video>
+            </>
           )}
-          {getIntuAccount && (
-            <Text>
-              <a
-                target="_blank"
-                href={`https://sepolia.arbiscan.io/address/${currentVaultEoa}`}
-              >
-                {`${currentVaultEoa.slice(0, 6)}...${currentVaultEoa.slice(
-                  -4
-                )}`}
-              </a>
-            </Text>
+          {isIntuConnected && (
+            <>
+              <Text>
+                <a
+                  target="_blank"
+                  href={`https://sepolia.arbiscan.io/address/${currentVaultEoa}`}
+                >
+                  {`${currentVaultEoa.slice(0, 6)}...${currentVaultEoa.slice(
+                    -4
+                  )}`}
+                </a>
+              </Text>
+              <br />
+              <br />
+            </>
           )}
         </VStack>
       </Box>
@@ -215,25 +239,12 @@ function App() {
       <Center>
         <AbsoluteCenter>
           {!isIntuConnected ? (
-            <Box
-              bg="rgba(200, 200, 200, 0.7)"
-              backdropFilter="blur(20px)"
-              borderRadius="md"
-              p={6}
-              boxShadow="md"
-            >
-              <RotatingText />
-              <br />
-              <Text color="black" fontSize="xl">
-                No wallet/gas/Web3-ness needed.
-              </Text>
-              <LoginButton
-                connectIntu={connectIntu}
-                isIntuConnected={isIntuConnected}
-                disconnectIntu={disconnectIntu}
-                isCreatingIntuAccount={isCreatingIntuAccount}
-              />
-            </Box>
+            <WelcomeBox
+              connectIntu={connectIntu}
+              isIntuConnected={isIntuConnected}
+              disconnectIntu={disconnectIntu}
+              isCreatingIntuAccount={isCreatingIntuAccount}
+            />
           ) : (
             <> </>
           )}
@@ -245,78 +256,26 @@ function App() {
                 isIntuConnected={isIntuConnected}
                 getIntuAccount={getIntuAccount}
               />
-              <GridItem>
-                <Box backdropFilter="blur(10px)" bg="rgba(1, 1, 1, 0.4)">
-                  <Heading as="h1" size="xl" color="white">
-                    <br />
-                    Get started with Web3! Claim an NFT! 🚀
-                  </Heading>
-                </Box>
-              </GridItem>
-              <GridItem>
-                <SimpleGrid
-                  columns={[1, 2, 3, 4]}
-                  spacing={6}
-                  px={4}
-                  backdropFilter="blur(10px)"
-                  bg="rgba(1, 1, 1, 0.4)"
-                  padding="50px;"
-                >
-                  {data.map((item, index) => (
-                    <Box
-                      key={index}
-                      borderWidth="1px"
-                      borderRadius="lg"
-                      overflow="hidden"
-                      backdropFilter="blur(20px)"
-                      bg="rgba(255, 255, 255, 0.7)"
-                      isDisabled={item.claimed}
-                    >
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        objectFit="cover"
-                        height="200px"
-                        width="100%"
-                      />
-                      <VStack p={4} align="start">
-                        <Text fontWeight="bold">NFT #{index + databump}</Text>
-                        <Text fontSize="sm" color="gray.500">
-                          Created: {item.date}
-                        </Text>
-                        {!creatingAccount ? (
-                          <Button
-                            isDisabled={item.claimed}
-                            bg={item.claimed ? "red.300" : "blue.300"}
-                            color={"white"}
-                            onClick={() =>
-                              submitTx(
-                                currentVault,
-                                currentVaultEoa,
-                                index + databump
-                              )
-                            }
-                          >
-                            {!item.claimed ? "CLAIM NFT" : "Claimed"}
-                          </Button>
-                        ) : (
-                          <Button isDisabled={true} isLoading={true}>
-                            .Creating Account.
-                          </Button>
-                        )}
-                      </VStack>
-                    </Box>
-                  ))}
-                </SimpleGrid>
-              </GridItem>
+              <PageHeader />
+              <NFTGrid
+                nftData={nftData}
+                currentVault={currentVault}
+                currentVaultEoa={currentVaultEoa}
+                creatingAccount={creatingAccount}
+                gatheringVaults={gatheringVaults}
+                onSubmitTx={submitTx}
+                nftContract={nftContract}
+              />
             </Grid>
           ) : (
             <>
               {isCreatingIntuAccount || gatheringVaults ? (
                 <>
+                  {/*
                   <Text color="white" size="xl">
                     Checking BlockChain ... <Spinner />
                   </Text>
+                  */}
                   <br />
                   <br />
                   <Spinner />

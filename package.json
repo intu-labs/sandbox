@@ -5,7 +5,7 @@
   "type": "module",
   "dependencies": {
     "@chakra-ui/react": "^2.10.4",
-    "@intuweb3/steven-web-kit": "^0.1.51",
+    "@intuweb3/steven-web-kit": "^0.1.53",
     "@vitejs/plugin-react": "^4.3.3",
     "eslint-config-react-app": "^7.0.1",
     "ethers": "5.7.2",

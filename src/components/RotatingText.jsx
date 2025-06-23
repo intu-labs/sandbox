@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Text } from "@chakra-ui/react";
+import { IS_XFI, IS_ETHERLINK } from "../config/constants";
 
 export const RotatingText = () => {
   const [index, setIndex] = useState(0);
@@ -13,6 +14,7 @@ export const RotatingText = () => {
     "SOCIAL",
     "ART",
     "NFT",
+    "WHATEVER",
   ];
 
   useEffect(() => {
@@ -25,7 +27,8 @@ export const RotatingText = () => {
 
   return (
     <Text color="black" fontSize="2xl" style={{ fontWeight: "bold" }}>
-      Welcome to this Web3: <br />
+      Welcome to this {IS_ETHERLINK ? "Etherlink" : IS_XFI ? "XFI" : "Web3"}:{" "}
+      <br />
       {texts[index]}
     </Text>
   );

@@ -1,29 +1,15 @@
 import { SimpleGrid } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
 import NFTCard from "./NFTCard";
-import { getClaimStatusForNFTs } from "./Nft";
-
+import { useNFT } from "../hooks/useNFT";
+import { provider } from "../config/constants";
 export const NFTGrid = ({
-  nftData,
   onSubmitTx,
   currentVault,
   currentVaultEoa,
   creatingAccount,
   gatheringVaults,
-  nftContract,
 }) => {
-  const [claimStatuses, setClaimStatuses] = useState([]);
-
-  useEffect(() => {
-    const fetchClaimStatuses = async () => {
-      const statuses = await getClaimStatusForNFTs(nftContract, nftData.length);
-      setClaimStatuses(statuses);
-    };
-
-    if (nftContract) {
-      fetchClaimStatuses();
-    }
-  }, [nftContract, nftData]);
+  const { nftData } = useNFT(provider);
 
   return (
     <SimpleGrid
@@ -44,7 +30,7 @@ export const NFTGrid = ({
           currentVaultEoa={currentVaultEoa}
           creatingAccount={creatingAccount}
           gatheringVaults={gatheringVaults}
-          isClaimed={claimStatuses[index]}
+          isClaimed={item.claimed}
         />
       ))}
     </SimpleGrid>

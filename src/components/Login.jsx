@@ -43,6 +43,7 @@ export const LoginButton = ({
           <Button colorScheme="purple" size="lg" onClick={connectHandler}>
             INTU Connect
           </Button>
+          {/*
           <Button
             colorScheme="purple"
             size="lg"
@@ -52,6 +53,7 @@ export const LoginButton = ({
           >
             Recover Account
           </Button>
+          */}
         </VStack>
       )}
     </div>

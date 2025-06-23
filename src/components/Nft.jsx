@@ -19,14 +19,13 @@ async function hasBeenClaimed(nftContract, tokenId) {
 export async function getClaimStatusForNFTs(nftContract, tokenIds) {
   try {
     const numberArray = Array.from({ length: tokenIds }, (_, i) => i);
-    const claimPromises = numberArray.map((id) =>
-      nftContract.hasNFTBeenClaimed(id + 1)
-    );
+    const claimPromises = numberArray.map((id) => {
+      return nftContract.hasNFTBeenClaimed(id + 1);
+    });
     const claimStatuses = await Promise.all(claimPromises);
     return claimStatuses;
   } catch (error) {
-    console.error("Error checking NFT claim status:", error);
+    //console.error("Error checking NFT claim status:", error);
     return Array(tokenIds).fill(false); // Return array of false values in case of error
   }
 }
-

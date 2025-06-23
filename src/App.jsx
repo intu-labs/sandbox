@@ -25,7 +25,6 @@ import { useNFT } from "./hooks/useNFT";
 import { NFTGrid } from "./components/NFTGrid";
 import { WelcomeBox } from "./components/WelcomeBox";
 import { PageHeader } from "./components/PageHeader";
-import { Transak } from "@transak/transak-sdk";
 
 import {
   NFT_CONTRACT_ADDRESS_ARBITRUM_ONE,
@@ -82,7 +81,6 @@ function App() {
   const [gatheringVaults, setGatheringVaults] = useState(false);
   const [creatingAccount, setCreatingAccount] = useState(false);
   const [claimStatuses, setClaimStatuses] = useState([]);
-  const [isTransakOpen, setIsTransakOpen] = useState(false);
 
   let sleeptime = IS_XFI ? 5500 : 1500;
   const databump = 1;
@@ -233,17 +231,7 @@ function App() {
                 </Text>
                 <br />
                 <br />
-                {!isCreatingIntuAccount &&
-                  currentVaultEoa !=
-                    "0x0000000000000000000000000000000000000000" && (
-                    <Button
-                      onClick={() => doTransak(currentVaultEoa)}
-                      colorScheme="blue"
-                      mt={4}
-                    >
-                      Buy Crypto
-                    </Button>
-                  )}
+
               </>
             )}
         </VStack>
@@ -251,46 +239,7 @@ function App() {
     );
   };
 
-  const doTransak = async (wallet) => {
-    const transakConfig = {
-      apiKey: "99a7a0e0-839b-41f7-8905-97db358b15f0", // (Required)
-      environment: Transak.ENVIRONMENTS.STAGING,
-      widgetType: "full-screen", // Use full-page overlay
-      cryptoCurrency: "ETH", // Example cryptocurrency
-      fiatCurrency: "USD", // Example fiat currency
-      defaultFiatAmount: 20, // Default fiat amount
-      walletAddress: wallet, // Replace with your wallet address
-      themeColor: "#000000", // Customize theme color
-      exchangeScreenTitle: IS_XFI
-        ? "Get started with CROSSFI"
-        : IS_ETHERLINK
-        ? "Get started with ETHERLINK"
-        : "Get started",
-      defaultNetwork: IS_XFI ? "crossfi" : IS_ETHERLINK ? "tezos" : "ethereum",
-      //hostURL: window.location.origin, // Current host URL
-      //
-      //https://docs.transak.com/docs/query-parameters
-      //
-    };
-
-    const transak = new Transak(transakConfig);
-    transak.init();
-
-    Transak.on(Transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL, (orderData) => {
-      console.log("Order Successful:", orderData);
-      transak.close();
-    });
-
-    Transak.on(Transak.EVENTS.TRANSAK_ORDER_FAILED, (errorData) => {
-      console.error("Order Failed:", errorData);
-      transak.close();
-    });
-
-    Transak.on(Transak.EVENTS.TRANSAK_WIDGET_CLOSE, () => {
-      console.log("Transak Widget Closed");
-      transak.close();
-    });
-  };
+  
 
   return (
     <Box

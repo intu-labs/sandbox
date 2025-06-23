@@ -23,7 +23,7 @@ export default defineConfig({
     allowedHosts: true,
   },
   optimizeDeps: {
-    include: ["@intuweb3/web-kit", "@transak/transak-sdk"],
+    include: ["@intuweb3/web-kit"],
     exclude: ["vite-plugin-wasm"],
   },
   build: {

@@ -6,7 +6,6 @@
   "dependencies": {
     "@chakra-ui/react": "^2.10.9",
     "@intuweb3/web-kit": "^0.2.41",
-    "@transak/transak-sdk": "^3.2.0",
     "@vitejs/plugin-react": "^4.6.0",
     "eslint-config-react-app": "^7.0.1",
     "ethers": "5.7.2",

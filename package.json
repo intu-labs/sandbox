@@ -4,19 +4,20 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@chakra-ui/react": "^2.10.4",
-    "@intuweb3/steven-web-kit": "^0.1.53",
-    "@vitejs/plugin-react": "^4.3.3",
+    "@chakra-ui/react": "^2.10.9",
+    "@intuweb3/web-kit": "^0.2.41",
+    "@transak/transak-sdk": "^3.2.0",
+    "@vitejs/plugin-react": "^4.6.0",
     "eslint-config-react-app": "^7.0.1",
     "ethers": "5.7.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-icons": "^5.3.0",
-    "viem": "^2.21.43"
+    "react-icons": "^5.5.0",
+    "viem": "^2.31.4"
   },
   "devDependencies": {
-        "vite": "^5.4.10",
-    "vite-plugin-wasm": "^3.3.0"
+    "vite": "^5.4.19",
+    "vite-plugin-wasm": "^3.4.1"
   },
   "scripts": {
     "start": "vite",
@@ -24,7 +25,6 @@
     "preview": "vite preview",
     "viteme": "vite build && vite preview",
     "serve": "vite preview"
-
   },
   "eslintConfig": {
     "extends": [

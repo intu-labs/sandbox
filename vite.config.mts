@@ -14,13 +14,13 @@ export default defineConfig({
     open: false,
     port: 3000,
     host: true,
-    allowedHosts: ["all"],
+    allowedHosts: true,
   },
   preview: {
     open: false,
     port: 3000,
     host: true,
-    allowedHosts: ["all"],
+    allowedHosts: true,
   },
   optimizeDeps: {
     include: ["@intuweb3/web-kit", "@transak/transak-sdk"],

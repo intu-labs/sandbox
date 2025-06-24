@@ -15,6 +15,9 @@ export default defineConfig({
     port: 3000,
     host: true,
     allowedHosts: true,
+    headers: {
+      "Cross-Origin-Embedder-Policy": "unsafe-none",
+    },
   },
   preview: {
     open: false,
